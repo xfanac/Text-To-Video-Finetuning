@@ -293,9 +293,13 @@ def handle_cache_latents(
             save_name = f"cached_{i}"
             full_out_path =  f"{cache_save_dir}/{save_name}.pt"
 
-            pixel_values = batch['pixel_values'].to('cuda', dtype=torch.float16)
-            batch['pixel_values'] = tensor_to_vae_latent(pixel_values, vae)
-            for k, v in batch.items(): batch[k] = v[0]
+            pixel_values = batch[0]['pixel_values'].to('cuda', dtype=torch.float16)
+            batch[0]['pixel_values'] = tensor_to_vae_latent(pixel_values, vae)
+            frozen_pixel_values = batch[1]['pixel_values'].to('cuda', dtype=torch.float16)
+            batch[1]['pixel_values'] = tensor_to_vae_latent(frozen_pixel_values, vae)
+            
+            for k, v in batch[0].items(): batch[0][k] = v[0]
+            for k, v in batch[1].items(): batch[1][k] = v[0]
         
             torch.save(batch, full_out_path)
             del pixel_values
