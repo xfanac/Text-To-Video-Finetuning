@@ -1,8 +1,6 @@
 #!/bin/bash
 
-sample_cnt=3
-for index in $sample_cnt
+for index in {1..3}
 do
-    per_file_suffix=dog"$index"_frozen
-    eval "python3 inference.py --prompt \"A dog\" --model ./models/model_scope_diffusers --sdp --suffix $per_file_suffix --output-dir ./output/"
+    eval "python3 inference.py --prompt \"A dog\" --model ./models/model_scope_diffusers --sdp --output-dir ./output/"
 done
