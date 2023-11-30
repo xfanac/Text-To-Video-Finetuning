@@ -512,6 +512,9 @@ class VideoFolderDataset(Dataset):
         self.fallback_prompt = fallback_prompt
 
         self.video_files = glob(f"{path}/*.mp4")
+        self.frozen_video_files = glob(f"{path}/*_frozen.mp4")
+        for frozen in self.frozen_video_files:
+            self.video_files.remove(frozen)
 
         self.width = width
         self.height = height
@@ -584,7 +587,18 @@ class VideoFolderDataset(Dataset):
 
         prompt_ids = self.get_prompt_ids(prompt)
 
-        return {"pixel_values": normalize_input(video[0]), "prompt_ids": prompt_ids, "text_prompt": prompt, 'dataset': self.__getname__()}
+        frozen_video, _ = self.process_video_wrapper(self.video_files[index].replace(".mp4", "_frozen.mp4"))
+
+        if os.path.exists(self.video_files[index].replace(".mp4", "_frozen.txt")):
+            with open(self.video_files[index].replace(".mp4", "_frozen.txt"), "r") as f:
+                frozen_prompt = f.read()
+        else:
+            raise ValueError("Frozen video do no have prompts.")
+
+        frozen_prompt_ids = self.get_prompt_ids(frozen_prompt)
+
+        return ({"pixel_values": normalize_input(video[0]), "prompt_ids": prompt_ids, "text_prompt": prompt, 'dataset': self.__getname__()}, 
+                {"pixel_values": normalize_input(frozen_video[0]), "prompt_ids": frozen_prompt_ids, "text_prompt": frozen_prompt, 'dataset': self.__getname__()})
 
 class CachedDataset(Dataset):
     def __init__(self,cache_dir: str = ''):

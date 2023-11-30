@@ -849,10 +849,12 @@ def main(
             
             with accelerator.accumulate(unet) ,accelerator.accumulate(text_encoder):
 
-                text_prompt = batch['text_prompt'][0]
+                text_prompt = batch[0]['text_prompt'][0]
                 
                 with accelerator.autocast():
-                    loss, latents = finetune_unet(batch, train_encoder=train_text_encoder)
+                    train_loss, latents = finetune_unet(batch[0], train_encoder=train_text_encoder)
+                    prior_preserve_loss, _ = finetune_unet(batch[1], train_encoder=train_text_encoder)
+                    loss = train_loss + prior_preserve_loss
                 
                 # Gather the losses across all processes for logging (if we use distributed training).
                 avg_loss = accelerator.gather(loss.repeat(train_batch_size)).mean()
