@@ -935,7 +935,7 @@ def main(
 
                             prompt = text_prompt if len(validation_data.prompt) <= 0 else validation_data.prompt
 
-                            curr_dataset_name = batch['dataset']
+                            curr_dataset_name = batch[0]['dataset']
                             save_filename = f"{global_step}_dataset-{curr_dataset_name}_{prompt}"
 
                             out_file = f"{output_dir}/samples/{save_filename}.mp4"
