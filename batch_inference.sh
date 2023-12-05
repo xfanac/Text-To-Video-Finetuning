@@ -1,8 +1,8 @@
 #!/bin/bash
 
-check_points='./outputs/train_2023-11-20T23-10-32/checkpoint-*'
+check_points='./outputs/train_2023-12-03T22-02-11-prompt-unique-token-dog/checkpoint-*'
 suffix=unique_token_dog_only_$(date +%s)
-prompts=("\"A « dog is playing ball\"" "\"A « dog is runnig\"" "\"A dog\"" "\"A dog is running\"")
+prompts=("\"A « dog\"" "\"A « dog is runnig\"" "\"A dog\"" "\"A dog is running\"")
 for prompt in "${prompts[@]}"
 do
     per_file_suffix=_"$suffix"_benchmark
