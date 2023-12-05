@@ -33,7 +33,7 @@ from uuid import uuid4
 import numpy as np
 import torch
 from compel import Compel
-from diffusers import DPMSolverMultistepScheduler, TextToVideoSDPipeline, UNet3DConditionModel
+from diffusers import DPMSolverSinglestepScheduler, TextToVideoSDPipeline, UNet3DConditionModel
 from einops import rearrange
 from torch import Tensor
 from torch.nn.functional import interpolate
@@ -67,7 +67,7 @@ def initialize_pipeline(
         vae=vae.to(device=device, dtype=torch.half),
         unet=unet.to(device=device, dtype=torch.half),
     )
-    pipe.scheduler = DPMSolverMultistepScheduler.from_config(pipe.scheduler.config)
+    pipe.scheduler = DPMSolverSinglestepScheduler.from_config(pipe.scheduler.config)
 
     unet.disable_gradient_checkpointing()
     handle_memory_attention(xformers, sdp, unet)
